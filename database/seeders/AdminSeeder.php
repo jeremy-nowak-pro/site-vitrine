@@ -17,9 +17,10 @@ class AdminSeeder extends Seeder
             return;
         }
 
-        User::updateOrCreate(
+        // est_admin n'est pas « fillable » : aucun formulaire ne doit pouvoir le modifier.
+        User::unguarded(fn () => User::updateOrCreate(
             ['email' => $email],
-            ['name' => $name, 'password' => $password, 'email_verified_at' => now()],
-        );
+            ['name' => $name, 'password' => $password, 'email_verified_at' => now(), 'est_admin' => true],
+        ));
     }
 }

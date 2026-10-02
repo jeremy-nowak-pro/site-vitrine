@@ -37,7 +37,10 @@ class HandleInertiaRequests extends Middleware
     {
         return [
             ...parent::share($request),
-            //
+            // Champs choisis explicitement : jamais le modèle User complet.
+            'auth' => fn () => $request->user()
+                ? ['nom' => $request->user()->name, 'email' => $request->user()->email]
+                : null,
         ];
     }
 }
