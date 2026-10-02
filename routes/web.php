@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\ServiceStatusController;
+use App\Http\Controllers\CatalogueController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', ServiceStatusController::class)->name('home');
+Route::get('/', CatalogueController::class)->name('catalogue');

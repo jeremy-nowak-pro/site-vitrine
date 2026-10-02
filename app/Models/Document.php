@@ -30,7 +30,7 @@ class Document extends Model
 
     public function searchableAs(): string
     {
-        return 'documents';
+        return config('scout.prefix').'documents';
     }
 
     /**

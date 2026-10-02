@@ -50,7 +50,7 @@ class Piece extends Model
 
     public function searchableAs(): string
     {
-        return 'pieces';
+        return config('scout.prefix').'pieces';
     }
 
     /**

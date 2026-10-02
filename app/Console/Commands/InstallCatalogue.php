@@ -55,6 +55,8 @@ class InstallCatalogue extends Command
             config(['catalogue.seed.pieces' => (int) $pieces]);
         }
         $this->call('db:seed', ['--force' => true]);
+        // Les libellés des facettes sont mis en cache par RechercheCatalogue.
+        $this->call('cache:clear');
 
         $this->components->info('4/5 Miniatures');
         $this->call('app:thumbnails');
@@ -83,8 +85,8 @@ class InstallCatalogue extends Command
         }
 
         $this->newLine();
-        $this->components->twoColumnDetail('Pièces indexées', Number::format($meilisearch->index('pieces')->stats()['numberOfDocuments']));
-        $this->components->twoColumnDetail('Documents indexés', Number::format($meilisearch->index('documents')->stats()['numberOfDocuments']));
+        $this->components->twoColumnDetail('Pièces indexées', Number::format($meilisearch->index((new Piece)->searchableAs())->stats()['numberOfDocuments']));
+        $this->components->twoColumnDetail('Documents indexés', Number::format($meilisearch->index((new Document)->searchableAs())->stats()['numberOfDocuments']));
         $this->components->twoColumnDetail('Durée totale', Number::format(microtime(true) - $debut, 1).' s');
         $this->components->twoColumnDetail('Compte admin', (string) config('catalogue.admin.email'));
         $this->newLine();

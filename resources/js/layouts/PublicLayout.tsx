@@ -20,12 +20,12 @@ export default function PublicLayout({ children }: PropsWithChildren) {
             </a>
 
             <header className="border-b border-line">
-                <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-6 px-4 sm:px-6">
+                <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-6 gap-y-1 px-4 py-2.5 sm:h-14 sm:py-0 sm:px-6">
                     <Link href="/" className="text-[15px] font-semibold tracking-tight">
                         Catalogue Miniatures
                     </Link>
                     <nav aria-label="Navigation principale">
-                        <ul className="flex items-center gap-1 text-sm">
+                        <ul className="-mx-2.5 flex items-center gap-1 text-sm sm:mx-0">
                             {navigation.map((item) => {
                                 const active = item.match(url);
                                 return (
@@ -47,7 +47,7 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                 </div>
             </header>
 
-            <main id="contenu" className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 sm:py-10">
+            <main id="contenu" className="mx-auto w-full min-w-0 max-w-7xl flex-1 px-4 py-8 sm:px-6 sm:py-10">
                 {children}
             </main>
 
