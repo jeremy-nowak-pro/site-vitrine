@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Table('echelles')]
-#[Fillable(['libelle', 'rapport'])]
+#[Fillable(['libelle', 'slug', 'rapport'])]
 class Echelle extends Model
 {
     /**

@@ -2,6 +2,8 @@
 
 namespace Database\Seeders\Support;
 
+use App\Support\MiniatureCategorie;
+
 /**
  * Données de référence du catalogue de démonstration. Tous les fabricants et
  * modèles de voitures sont fictifs.
@@ -198,6 +200,6 @@ final class Referentiel
 
     public static function cheminMiniature(string $forme): string
     {
-        return "thumbnails/categories/{$forme}.svg";
+        return MiniatureCategorie::chemin($forme);
     }
 }

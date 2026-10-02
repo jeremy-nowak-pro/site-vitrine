@@ -20,6 +20,7 @@ return new class extends Migration
         Schema::create('echelles', function (Blueprint $table) {
             $table->id();
             $table->string('libelle', 16)->unique();
+            $table->string('slug', 16)->unique();
             // Dénominateur de l'échelle : 18 pour 1/18. Sert au tri.
             $table->unsignedSmallInteger('rapport')->unique();
             $table->timestamps();
@@ -43,6 +44,7 @@ return new class extends Migration
         Schema::create('periodes', function (Blueprint $table) {
             $table->id();
             $table->string('libelle', 60)->unique();
+            $table->string('slug', 60)->unique();
             $table->unsignedSmallInteger('annee_debut')->nullable();
             $table->unsignedSmallInteger('annee_fin')->nullable();
             $table->timestamps();

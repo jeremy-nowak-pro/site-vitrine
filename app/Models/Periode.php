@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Table('periodes')]
-#[Fillable(['libelle', 'annee_debut', 'annee_fin'])]
+#[Fillable(['libelle', 'slug', 'annee_debut', 'annee_fin'])]
 class Periode extends Model
 {
     /**

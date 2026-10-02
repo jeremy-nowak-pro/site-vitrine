@@ -26,7 +26,13 @@ class ReferentielSeeder extends Seeder
         ));
 
         DB::table('echelles')->insert(array_map(
-            fn (array $echelle) => ['libelle' => $echelle[0], 'rapport' => $echelle[1], ...$horodatage],
+            fn (array $echelle) => [
+                'libelle' => $echelle[0],
+                // « 1/18 » devient « 1-18 » : Str::slug supprimerait la barre et donnerait « 118 ».
+                'slug' => str_replace('/', '-', $echelle[0]),
+                'rapport' => $echelle[1],
+                ...$horodatage,
+            ],
             Referentiel::ECHELLES,
         ));
 
@@ -48,6 +54,7 @@ class ReferentielSeeder extends Seeder
         DB::table('periodes')->insert(array_map(
             fn (array $periode) => [
                 'libelle' => $periode[0],
+                'slug' => Str::slug($periode[0]),
                 'annee_debut' => $periode[1],
                 'annee_fin' => $periode[2],
                 ...$horodatage,

@@ -28,7 +28,7 @@ class ServiceStatusController extends Controller
                     return Cache::store('redis')->get('status-check') === 'ok' ? 'lecture / écriture OK' : null;
                 }),
                 $this->check('Meilisearch', fn () => 'v'.Http::timeout(3)
-                    ->get(config('services.meilisearch.host').'/version')
+                    ->get(config('scout.meilisearch.host').'/version')
                     ->throw()
                     ->json('pkgVersion')),
                 $this->check('Stockage S3 (RustFS)', function () {
