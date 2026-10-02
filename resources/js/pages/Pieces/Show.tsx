@@ -1,7 +1,9 @@
 import { Head, Link } from '@inertiajs/react';
+import { useCallback, useState } from 'react';
 import PieceCard from '@/components/catalogue/PieceCard';
 import BoutonFavori from '@/components/piece/BoutonFavori';
 import ZoneVisionneuse from '@/components/piece/ZoneVisionneuse';
+import type { ExportStl } from '@/components/visionneuse/Visionneuse';
 import PublicLayout from '@/layouts/PublicLayout';
 import { formaterDate, formaterMm, urlFiltre } from '@/lib/catalogue';
 import type { CartePiece, DocumentLie, FichePiece } from '@/types/piece';
@@ -20,7 +22,18 @@ function LienFiltre({ href, children }: { href: string; children: React.ReactNod
     );
 }
 
+function telecharger(fichier: Blob, nom: string) {
+    const url = URL.createObjectURL(fichier);
+    const lien = document.createElement('a');
+    lien.href = url;
+    lien.download = nom;
+    lien.click();
+    URL.revokeObjectURL(url);
+}
+
 export default function PieceShow({ piece, compatibles, documents }: Props) {
+    const [exporterStl, setExporterStl] = useState<ExportStl | null>(null);
+    const recevoirExport = useCallback((exporter: ExportStl | null) => setExporterStl(() => exporter), []);
     const caracteristiques: [string, React.ReactNode][] = [
         ['Référence', <span className="font-mono text-[13px]">{piece.reference}</span>],
         ['Catégorie', <LienFiltre href={urlFiltre('categorie', piece.categorie.slug)}>{piece.categorie.nom}</LienFiltre>],
@@ -84,9 +97,10 @@ export default function PieceShow({ piece, compatibles, documents }: Props) {
                     ) : (
                         <button
                             type="button"
-                            disabled
-                            title="Le STL sera généré par la visionneuse 3D"
-                            className="inline-flex h-9 items-center rounded bg-surface-strong px-3.5 text-sm font-medium text-ink-faint"
+                            disabled={exporterStl === null}
+                            onClick={() => exporterStl && telecharger(exporterStl(), `${piece.reference}.stl`)}
+                            title="Généré à partir du modèle affiché"
+                            className="inline-flex h-9 items-center rounded bg-accent px-3.5 text-sm font-medium text-white hover:bg-accent-strong disabled:bg-surface-strong disabled:text-ink-faint"
                         >
                             Télécharger le STL
                         </button>
@@ -95,7 +109,7 @@ export default function PieceShow({ piece, compatibles, documents }: Props) {
             </div>
 
             <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1fr)_340px]">
-                <ZoneVisionneuse piece={piece} />
+                <ZoneVisionneuse piece={piece} onExportPret={recevoirExport} />
 
                 <section aria-labelledby="titre-caracteristiques">
                     <h2 id="titre-caracteristiques" className="text-sm font-semibold">

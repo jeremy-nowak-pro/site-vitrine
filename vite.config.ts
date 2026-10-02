@@ -17,6 +17,10 @@ export default defineConfig({
             '@': '/resources/js',
         },
     },
+    build: {
+        // Le seul fichier au-delà de 500 Ko est la visionneuse (Three.js), chargée à la demande sur la fiche pièce.
+        chunkSizeWarningLimit: 1100,
+    },
     server: {
         watch: {
             ignored: ['**/storage/framework/views/**', '**/.claude/**'],
