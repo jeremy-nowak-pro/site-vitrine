@@ -40,7 +40,8 @@ class Document extends Model
      */
     public function toSearchableArray(): array
     {
-        $texte = Str::squish(strip_tags(str_replace('<', ' <', $this->contenu)));
+        // Les fins de titre deviennent « : » pour que l'extrait reste lisible.
+        $texte = Str::squish(strip_tags(str_replace(['</h2>', '</h3>', '<'], [' : ', ' : ', ' <'], $this->contenu)));
 
         return [
             'id' => $this->id,

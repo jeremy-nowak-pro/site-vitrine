@@ -57,7 +57,7 @@ class DocumentSeeder extends Seeder
             $categorie = Referentiel::CATEGORIES[$piece->categorie->forme];
             $this->creer(
                 TypeDocument::NoticeMontage,
-                'Montage '.$categorie['objet'].' de la '.$piece->modele->nom,
+                'Montage '.$categorie['objet'].' de '.Referentiel::la($piece->modele->nom),
                 $this->redaction->notice($categorie, $piece->modele->nom),
                 fn (Builder $pieces) => $pieces->where('modele_id', $piece->modele_id)->where('categorie_id', $piece->categorie_id),
             );
@@ -68,7 +68,7 @@ class DocumentSeeder extends Seeder
             $categorie = Referentiel::CATEGORIES[$piece->categorie->forme];
             $this->creer(
                 TypeDocument::GuidePeinture,
-                'Mise en peinture '.$categorie['objet'].' de la '.$piece->modele->nom,
+                'Mise en peinture '.$categorie['objet'].' de '.Referentiel::la($piece->modele->nom),
                 $this->redaction->peinture($categorie, $piece->modele->nom, $piece->materiau->nom),
                 fn (Builder $pieces) => $pieces->where('modele_id', $piece->modele_id)->where('categorie_id', $piece->categorie_id),
             );
@@ -79,7 +79,7 @@ class DocumentSeeder extends Seeder
             $categorie = Referentiel::CATEGORIES[$piece->categorie->forme];
             $this->creer(
                 TypeDocument::FicheTechnique,
-                'Fiche technique '.$categorie['objet'].' de la '.$piece->modele->nom.' au '.$piece->echelle->libelle,
+                'Fiche technique '.$categorie['objet'].' de '.Referentiel::la($piece->modele->nom).' au '.$piece->echelle->libelle,
                 $this->redaction->fiche([
                     'reference' => $piece->reference,
                     'fabricant' => $piece->fabricant->nom,
@@ -119,9 +119,11 @@ class DocumentSeeder extends Seeder
      */
     private function creer(TypeDocument $type, string $titre, string $contenu, callable $piecesConcernees): void
     {
-        $slug = Str::slug($titre);
+        // « au 1/12 » devient « au-1-12 » plutôt que « au-112 ».
+        $base = Str::slug(str_replace('/', ' ', $titre));
+        $slug = $base;
         for ($suffixe = 2; isset($this->slugs[$slug]); $suffixe++) {
-            $slug = Str::slug($titre).'-'.$suffixe;
+            $slug = $base.'-'.$suffixe;
         }
         $this->slugs[$slug] = true;
 

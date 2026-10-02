@@ -46,3 +46,58 @@
         background: var(--color-accent-soft);
     }
 }
+
+/*
+ * Contenu HTML des documents. Styles écrits à la main plutôt qu'avec le
+ * plugin Typography : une poignée de balises suffit.
+ */
+@layer components {
+    .contenu-document {
+        @apply text-[15px] leading-relaxed text-ink;
+    }
+
+    .contenu-document > * + * {
+        @apply mt-4;
+    }
+
+    .contenu-document h2 {
+        @apply mt-9 scroll-mt-6 border-b border-line pb-1.5 text-base font-semibold;
+    }
+
+    .contenu-document h3 {
+        @apply mt-6 text-sm font-semibold;
+    }
+
+    .contenu-document ul {
+        @apply list-disc space-y-1 pl-5;
+    }
+
+    .contenu-document ol {
+        @apply list-decimal space-y-2 pl-5;
+    }
+
+    .contenu-document li::marker {
+        @apply text-ink-faint;
+    }
+
+    .contenu-document table {
+        @apply w-full border-collapse text-sm;
+    }
+
+    .contenu-document th,
+    .contenu-document td {
+        @apply border-b border-line px-3 py-2 text-left align-top;
+    }
+
+    .contenu-document thead th {
+        @apply bg-surface font-medium text-ink-muted;
+    }
+
+    .contenu-document tbody th {
+        @apply w-48 font-normal text-ink-muted;
+    }
+
+    .contenu-document code {
+        @apply rounded bg-surface px-1 font-mono text-[13px];
+    }
+}

@@ -198,6 +198,26 @@ final class Referentiel
         'Service qualité',
     ];
 
+    /**
+     * Passe la première lettre en minuscule, sauf pour un sigle (« ABS injecté »).
+     */
+    public static function minuscule(string $texte): string
+    {
+        $deuxieme = mb_substr($texte, 1, 1);
+
+        return $deuxieme !== '' && mb_strtoupper($deuxieme) === $deuxieme && mb_strtolower($deuxieme) !== $deuxieme
+            ? $texte
+            : mb_strtolower(mb_substr($texte, 0, 1)).mb_substr($texte, 1);
+    }
+
+    /**
+     * « la Vortex GT », mais « l’Aurore Type B » devant une voyelle.
+     */
+    public static function la(string $modele): string
+    {
+        return preg_match('/^[aeiouyàâéèêëîïôöûü]/iu', $modele) ? "l’{$modele}" : "la {$modele}";
+    }
+
     public static function cheminMiniature(string $forme): string
     {
         return MiniatureCategorie::chemin($forme);

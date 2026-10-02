@@ -133,7 +133,7 @@ final class ContenuDocument
         ];
 
         return implode("\n", [
-            '<p>Cette notice décrit le montage '.e($categorie['objet']).' de la '.e($modele).', toutes échelles confondues. Lire l’ensemble des étapes avant de détacher la première pièce.</p>',
+            '<p>Cette notice décrit le montage '.e($categorie['objet']).' de '.e(Referentiel::la($modele)).', toutes échelles confondues. Lire l’ensemble des étapes avant de détacher la première pièce.</p>',
             '<h2>Contenu du sachet</h2>',
             '<ul>'.implode('', $contenu).'</ul>',
             '<h2>Outillage</h2>',
@@ -159,9 +159,9 @@ final class ContenuDocument
         ), $categorie['parties']);
 
         return implode("\n", [
-            '<p>Teintes et ordre d’application pour la mise en peinture '.e($categorie['objet']).' de la '.e($modele).'. Les références TC renvoient au nuancier interne.</p>',
+            '<p>Teintes et ordre d’application pour la mise en peinture '.e($categorie['objet']).' de '.e(Referentiel::la($modele)).'. Les références TC renvoient au nuancier interne.</p>',
             '<h2>Préparation</h2>',
-            '<p>Support en '.e(mb_strtolower($materiau)).' : appliquer la procédure de préparation correspondante, puis un apprêt gris clair en deux voiles.</p>',
+            '<p>Support en '.e(Referentiel::minuscule($materiau)).' : appliquer la procédure de préparation correspondante, puis un apprêt gris clair en deux voiles.</p>',
             '<h2>Teintes</h2>',
             '<table><thead><tr><th>Zone</th><th>Teinte</th><th>Référence</th><th>Finition</th></tr></thead><tbody>'.implode('', $lignes).'</tbody></table>',
             '<h2>Ordre d’application</h2>',
@@ -182,7 +182,7 @@ final class ContenuDocument
 
         return implode("\n", [
             '<h2>Objet</h2>',
-            '<p>'.e($sujet).'. Cette procédure s’applique à toutes les pièces en '.e(mb_strtolower($materiau)).' traitées en atelier.</p>',
+            '<p>'.e($sujet).'. Cette procédure s’applique à toutes les pièces en '.e(Referentiel::minuscule($materiau)).' traitées en atelier.</p>',
             '<h2>Équipement de protection</h2>',
             '<ul>'.implode('', array_map(fn (string $epi) => '<li>'.e($epi).'</li>', $equipements)).'</ul>',
             '<h2>Mode opératoire</h2>',
@@ -220,7 +220,7 @@ final class ContenuDocument
         ));
 
         return implode("\n", [
-            '<p>Caractéristiques de référence pour la '.e($modele).' au '.e($piece['echelle']).'. Les variantes du même lot partagent ces valeurs à la tolérance près.</p>',
+            '<p>Caractéristiques de référence pour '.e(Referentiel::la($modele)).' au '.e($piece['echelle']).'. Les variantes du même lot partagent ces valeurs à la tolérance près.</p>',
             '<h2>Caractéristiques</h2>',
             '<table><tbody>'.$tableau.'</tbody></table>',
             '<h2>Remarques</h2>',

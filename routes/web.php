@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CatalogueController;
+use App\Http\Controllers\DocumentationController;
 use App\Http\Controllers\FavorisController;
 use App\Http\Controllers\PieceController;
 use Illuminate\Support\Facades\Route;
@@ -16,3 +17,6 @@ Route::get('/favoris', [FavorisController::class, 'index'])->name('favoris');
 Route::get('/favoris/pieces', [FavorisController::class, 'pieces'])
     ->middleware('throttle:60,1')
     ->name('favoris.pieces');
+
+Route::get('/documentation', [DocumentationController::class, 'index'])->name('documentation');
+Route::get('/documentation/{document:slug}', [DocumentationController::class, 'show'])->name('documentation.show');

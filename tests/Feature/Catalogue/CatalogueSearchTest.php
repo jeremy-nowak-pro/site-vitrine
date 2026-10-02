@@ -6,12 +6,9 @@ use App\Models\Document;
 use App\Models\Piece;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Sleep;
 use Inertia\Testing\AssertableInertia as Assert;
-use Laravel\Scout\EngineManager;
-use Meilisearch\Contracts\TasksQuery;
-use Meilisearch\Exceptions\ApiException;
 use PHPUnit\Framework\Attributes\Group;
+use Tests\Concerns\IndexeMeilisearch;
 use Tests\TestCase;
 
 /**
@@ -21,29 +18,18 @@ use Tests\TestCase;
 #[Group('meilisearch')]
 class CatalogueSearchTest extends TestCase
 {
-    use RefreshDatabase;
+    use IndexeMeilisearch, RefreshDatabase;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        config([
-            'scout.driver' => 'meilisearch',
-            'scout.prefix' => 'test_',
-            'scout.queue' => false,
-            'catalogue.seed.pieces' => 300,
-            'catalogue.seed.documents' => 10,
-        ]);
-        $this->seed();
-        $this->supprimerIndex();
-        $this->artisan('scout:sync-index-settings');
-        Piece::makeAllSearchable();
-        $this->attendreIndexation();
+        $this->indexerPourLesTests(pieces: 300, documents: 10);
     }
 
     protected function tearDown(): void
     {
-        $this->supprimerIndex();
+        $this->supprimerIndexDeTest();
         parent::tearDown();
     }
 
@@ -96,27 +82,5 @@ class CatalogueSearchTest extends TestCase
                 ->where('resultats.pages', 13)
                 ->has('resultats.pieces', 24)
                 ->where('resultats.pieces.0.reference', Piece::orderBy('reference')->skip(24)->value('reference')));
-    }
-
-    private function supprimerIndex(): void
-    {
-        $meilisearch = app(EngineManager::class)->engine('meilisearch');
-        foreach (['test_pieces', 'test_documents'] as $index) {
-            try {
-                $meilisearch->deleteIndex($index);
-            } catch (ApiException) {
-                // Index absent.
-            }
-        }
-        $this->attendreIndexation();
-    }
-
-    private function attendreIndexation(): void
-    {
-        $meilisearch = app(EngineManager::class)->engine('meilisearch');
-        $requete = (new TasksQuery)->setStatuses(['enqueued', 'processing'])->setLimit(1);
-        for ($essai = 0; $essai < 100 && $meilisearch->getTasks($requete)->getTotal() > 0; $essai++) {
-            Sleep::for(100)->milliseconds();
-        }
     }
 }
