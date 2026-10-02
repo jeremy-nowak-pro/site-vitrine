@@ -1,5 +1,6 @@
 import { Link, usePage } from '@inertiajs/react';
 import type { PropsWithChildren } from 'react';
+import { useFavoris } from '@/hooks/useFavoris';
 
 const navigation = [
     { href: '/', label: 'Catalogue', match: (url: string) => url === '/' || url.startsWith('/pieces') },
@@ -9,6 +10,7 @@ const navigation = [
 
 export default function PublicLayout({ children }: PropsWithChildren) {
     const { url } = usePage();
+    const { references } = useFavoris();
 
     return (
         <div className="flex min-h-screen flex-col">
@@ -38,6 +40,9 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                                             }`}
                                         >
                                             {item.label}
+                                            {item.href === '/favoris' && references.length > 0 && (
+                                                <span className="ml-1 text-xs text-ink-faint tabular-nums">{references.length}</span>
+                                            )}
                                         </Link>
                                     </li>
                                 );

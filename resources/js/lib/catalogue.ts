@@ -47,3 +47,22 @@ export function basculerValeur(etat: EtatCatalogue, facette: CleFacette, valeur:
 export function nombreFiltresActifs(etat: EtatCatalogue): number {
     return Object.values(etat.selection).reduce((total, valeurs) => total + (valeurs?.length ?? 0), 0) + (etat.document ? 1 : 0);
 }
+
+/**
+ * Lien vers le catalogue filtré sur une seule valeur de facette.
+ */
+export function urlFiltre(facette: CleFacette, valeur: string): string {
+    return urlCatalogue({ q: '', selection: { [facette]: [valeur] }, document: null, tri: 'recent', page: 1 });
+}
+
+const millimetres = new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 2 });
+
+export function formaterMm(valeur: number): string {
+    return `${millimetres.format(valeur)} mm`;
+}
+
+const dates = new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+
+export function formaterDate(iso: string): string {
+    return dates.format(new Date(`${iso}T00:00:00`));
+}
