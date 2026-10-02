@@ -72,4 +72,17 @@ class PieceShowTest extends TestCase
             ->assertStreamedContent('solid test');
         $this->get("/pieces/{$piece->reference}/fichier.glb")->assertNotFound();
     }
+
+    public function test_file_url_changes_when_the_file_is_replaced(): void
+    {
+        $piece = Piece::firstOrFail();
+        $url = fn () => $this->get('/pieces/'.$piece->reference)->viewData('page')['props']['piece']['modele_3d'];
+
+        $piece->update(['chemin_modele_3d' => 'models/piece-v1.glb']);
+        $avant = $url();
+        $piece->update(['chemin_modele_3d' => 'models/piece-v2.glb']);
+
+        $this->assertStringContainsString('/fichier.glb?v=', $avant);
+        $this->assertNotSame($avant, $url());
+    }
 }

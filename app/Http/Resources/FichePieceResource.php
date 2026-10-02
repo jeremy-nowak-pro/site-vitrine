@@ -43,8 +43,13 @@ class FichePieceResource extends JsonResource
                 'hauteur' => $this->hauteur_mm,
             ],
             // Les fichiers privés passent par l'application : jamais d'URL de stockage interne.
-            'modele_3d' => $this->chemin_modele_3d ? route('pieces.fichier', [$this->reference, 'glb']) : null,
-            'stl' => $this->chemin_stl ? route('pieces.fichier', [$this->reference, 'stl']) : null,
+            // L'empreinte du chemin change l'URL quand le fichier est remplacé, malgré le cache navigateur.
+            'modele_3d' => $this->chemin_modele_3d
+                ? route('pieces.fichier', [$this->reference, 'glb', 'v' => substr(md5($this->chemin_modele_3d), 0, 8)])
+                : null,
+            'stl' => $this->chemin_stl
+                ? route('pieces.fichier', [$this->reference, 'stl', 'v' => substr(md5($this->chemin_stl), 0, 8)])
+                : null,
             'miniature' => $this->chemin_miniature ? Storage::disk('s3')->url($this->chemin_miniature) : null,
         ];
     }
