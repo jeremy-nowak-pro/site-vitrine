@@ -8,6 +8,7 @@ use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Number;
 use Illuminate\Support\Sleep;
@@ -17,12 +18,13 @@ use Meilisearch\Contracts\TasksQuery;
 use Meilisearch\Exceptions\ApiException;
 
 /**
- * Installation complète en une commande : stockage, base, données de
- * démonstration, miniatures et index Meilisearch.
+ * Installation complète en une commande : clé d'application, frontend,
+ * stockage, base, données de démonstration, miniatures et index Meilisearch.
  */
 #[Signature('app:install
     {--pieces= : Nombre de pièces à générer (2 000 par défaut, 300 000 pour le test de charge)}
-    {--force : Recréer la base sans demander de confirmation}')]
+    {--force : Recréer la base sans demander de confirmation}
+    {--build : Réinstaller les dépendances npm et reconstruire le frontend}')]
 #[Description('Installe le catalogue de démonstration : migrations, seeders, miniatures et indexation')]
 class InstallCatalogue extends Command
 {
@@ -44,13 +46,35 @@ class InstallCatalogue extends Command
 
         $debut = microtime(true);
 
-        $this->components->info('1/5 Stockage S3');
+        $this->components->info('1/7 Clé d’application');
+        if (blank(config('app.key'))) {
+            $this->call('key:generate', ['--force' => true]);
+        } else {
+            $this->components->twoColumnDetail('APP_KEY', 'déjà définie');
+        }
+
+        $this->components->info('2/7 Frontend');
+        if ($this->option('build') || ! file_exists(public_path('build/manifest.json'))) {
+            $build = Process::forever()->path(base_path())->run(
+                'npm ci --no-audit --no-fund && npm run build',
+                fn (string $type, string $sortie) => $this->output->write($sortie),
+            );
+            if ($build->failed()) {
+                $this->components->error('Le build du frontend a échoué.');
+
+                return self::FAILURE;
+            }
+        } else {
+            $this->components->twoColumnDetail('public/build', 'déjà construit (--build pour reconstruire)');
+        }
+
+        $this->components->info('3/7 Stockage S3');
         $this->call('app:storage-setup');
 
-        $this->components->info('2/5 Base de données');
+        $this->components->info('4/7 Base de données');
         $this->call('migrate:fresh', ['--force' => true]);
 
-        $this->components->info('3/5 Données de démonstration');
+        $this->components->info('5/7 Données de démonstration');
         if ($pieces !== null) {
             config(['catalogue.seed.pieces' => (int) $pieces]);
         }
@@ -58,10 +82,10 @@ class InstallCatalogue extends Command
         // Les libellés des facettes sont mis en cache par RechercheCatalogue.
         $this->call('cache:clear');
 
-        $this->components->info('4/5 Miniatures');
+        $this->components->info('6/7 Miniatures');
         $this->call('app:thumbnails');
 
-        $this->components->info('5/5 Indexation Meilisearch');
+        $this->components->info('7/7 Indexation Meilisearch');
         /** @var MeilisearchEngine $meilisearch */
         $meilisearch = $moteurs->engine('meilisearch');
         // L'import se fait ici, par lots synchrones : aucun worker de file n'est requis.

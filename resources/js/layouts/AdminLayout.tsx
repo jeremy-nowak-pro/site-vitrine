@@ -11,12 +11,12 @@ type PropsPartagees = { auth: { nom: string; email: string } | null };
 
 export function BandeauDemo() {
     return (
-        <div role="note" className="border-b border-notice-line bg-notice text-notice-ink">
-            <p className="mx-auto max-w-7xl px-4 py-2.5 text-sm font-medium sm:px-6">
+        <section aria-label="Avertissement de démonstration" className="border-b border-notice-line bg-notice text-notice-ink">
+            <p role="note" className="mx-auto max-w-7xl px-4 py-2.5 text-sm font-medium sm:px-6">
                 Version de démonstration : l’ajout de pièces et l’import CSV sont désactivés. Les statistiques affichent
                 des données fictives.
             </p>
-        </div>
+        </section>
     );
 }
 

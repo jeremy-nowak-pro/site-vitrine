@@ -5,7 +5,7 @@
 
 /*
  * Tokens de design. Une seule couleur d'accent (bleu ardoise), le reste en
- * niveaux de gris. Les rapports de contraste sur fond blanc dépassent 4.5:1.
+ * niveaux de gris. Tous les textes dépassent 4,5:1 sur chaque fond clair (vérifié par calcul WCAG).
  */
 @theme {
     --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -18,7 +18,7 @@
     --color-line-strong: #c6ccd3;
     --color-ink: #1f2429;
     --color-ink-muted: #59616b;
-    --color-ink-faint: #6f7781;
+    --color-ink-faint: #636b75;
     --color-accent: #3b5b7e;
     --color-accent-strong: #2e4865;
     --color-accent-soft: #e9eef4;
